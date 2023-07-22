@@ -9,10 +9,12 @@
 
 LCD MyLcd;
 
+uint16_t matrixType = 0000; // Change to match your display type
+
 void setup() {
   // put your setup code here, to run once:
   MyLcd.Init();
-  MyLcd.Display_MatrixClear(0, 0, address);
+  MyLcd.Display_Clear(matrixType);
 }
 
 void loop() {
