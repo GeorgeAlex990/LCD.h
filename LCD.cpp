@@ -167,6 +167,71 @@ void LCD::Display_MatrixClear(uint8_t x, uint8_t y, uint16_t matrixType)
 	}
 }
 
+void LCD:Display_Clear(uint16_t matrixType) {
+
+	uint8_t  datatype;
+	uint8_t	 maxW, maxH;
+
+	// 8*8 matrix
+	if(matrixType==88)
+	{
+		datatype = 2;
+		maxW = 8;
+		maxH = 8;
+	}
+	// 8*16 matrix
+	else if(matrixType==816)
+	{
+		datatype = 3;
+		maxW = 16;
+		maxH = 8;
+	}
+	// 16*16 matrix
+	else if(matrixType==1616)
+	{
+		datatype = 4;
+		maxW = 16;
+		maxH = 16;
+	}
+	// 1*8 matrix
+	else if(matrixType==18)
+	{
+		datatype = 5;	
+		maxW = 8;
+		maxH = 1;
+	}
+	// define figure flower
+	else if((matrixType>>4)==0x0e)
+	{
+		datatype = matrixType;
+	}
+	// clear screen
+	else if((matrixType>>4)==0x0c)
+	{
+		datatype = matrixType;
+	}
+
+	for (uint8_t x = 0; x <= maxW; ++x) {
+		for (uint8_t y = 0; y <= maxH; ++y) {
+			Wire.beginTransmission(2);			//I2C address
+			Wire.write(datatype);				//display data type
+			Wire.write(0);						//display data lenght
+			Wire.write(x);						//display content X coordinate
+			Wire.write(y);						//display content Y coordinate
+			Wire.endTransmission();	
+		}
+	}
+	
+	if(datatype==0xc0)
+	{
+		delay(30);
+	}
+	else
+	{
+		delay(3);
+	}
+}
+
 void LCD::Display_MatrixSave(uint8_t Num, uint8_t *byte)
 {
 	uint8_t datalength;
